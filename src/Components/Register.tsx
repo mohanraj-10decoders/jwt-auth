@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
-import { register } from '../Api';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { keyValue, userRegType } from '../Interfaces';
+import customAxios from '../Axios';
 import Classes from './Register.module.css';
 
 export default function Register() {
@@ -12,6 +12,7 @@ export default function Register() {
     cPassword: '',
   };
   const [userDetail, setUserDetail] = useState<userRegType>(initValue);
+  let navigate = useNavigate();
 
   const update = (prop:keyValue) => {
     let {name, email, password, cPassword}  = userDetail;
@@ -28,7 +29,18 @@ export default function Register() {
     if (name && email && password && password === cPassword) {
       setUserDetail(initValue);
       console.log('reg user', userDetail);
-      register({ username: email, password });
+      customAxios
+    .post('/auth/signup', { username: email, password })
+    .then((resp) => {
+      if(resp.status === 201) {
+        alert('User registered successfully!!');
+        navigate('/login');
+      }
+      else{
+        alert('Failed to register user')
+      }
+    })
+    .catch((err) => console.error(err.message));
     }
   };
   return (

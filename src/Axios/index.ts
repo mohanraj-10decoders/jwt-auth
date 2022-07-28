@@ -27,7 +27,7 @@ customAxios.interceptors.request.use(
 //       originalRequest._retry = true;
 //       const refreshToken = localStorage.getItem('refreshToken');
 //       axios.defaults.headers.common['x-access-token'] = `${refreshToken}`;
-//       // return customAxios(originalRequest);
+//       return customAxios(originalRequest);
 //     }
 //     console.log('err resp in inter', error);
 //     return Promise.reject(error);
