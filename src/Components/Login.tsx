@@ -24,9 +24,9 @@ export default function Login() {
     let { username, password } = credentials;
     if (username && password) {
       setCredentials(initValue);
-      console.log('creds', credentials);
+      // console.log('creds', credentials);
       customAxios
-        .post('/auth/login', credentials)
+        .post('/auth/login', { email: username })
         .then((resp) => {
           console.log('resp data', resp);
           if (resp?.data?.status === 'Success') {

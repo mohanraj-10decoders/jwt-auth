@@ -15,7 +15,7 @@ export default function Content() {
       .get('/auth/employees')
       .then((resp) => {
         setEmp(resp?.data?.data?.employees);
-        console.log(resp);
+        // console.log(resp);
       })
       .catch((err) => console.error(err.message));
   };
@@ -25,7 +25,7 @@ export default function Content() {
     <>
       <button onClick={getDetail}>Get Employees</button>
       {emp?.map((employee, index) => {
-        return <div>{index}</div>;
+        return <div id={index.toString()}>{index}</div>;
       })}
       <button onClick={logout} className={classes.logout}>
         Logout

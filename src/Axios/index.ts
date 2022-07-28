@@ -6,7 +6,7 @@ const customAxios = axios.create({
 
 customAxios.interceptors.request.use(
   async (config) => {
-    const token: string | null = localStorage.getItem('access_token');
+    const token = localStorage.getItem('access_token');
     config.headers = {
       'x-access-token': `${token}`,
     };
@@ -17,21 +17,60 @@ customAxios.interceptors.request.use(
   }
 );
 
-// customAxios.interceptors.response.use(
-//   (response) => {
-//     console.log('response in interceptor', response);
-//   },
-//   async (error) => {
-//     const originalRequest = error.config;
-//     if (error.response.status === 401 && !originalRequest._retry) {
-//       originalRequest._retry = true;
-//       const refreshToken = localStorage.getItem('refreshToken');
-//       axios.defaults.headers.common['x-access-token'] = `${refreshToken}`;
-//       return customAxios(originalRequest);
-//     }
-//     console.log('err resp in inter', error);
-//     return Promise.reject(error);
-//   }
-// );
+const reqInterceptor = customAxios.interceptors.request.use(
+  async (config) => {
+    const token = localStorage.getItem('access_token');
+    config.headers = {
+      'x-access-token': `${token}`,
+    };
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+createAxiosResponseInterceptor();
+
+function createAxiosResponseInterceptor() {
+  customAxios.interceptors.response.use(
+    (response) => response,
+    (error) => {
+      if (
+        // error.response.status === 401 &&
+        error.response.data.message ===
+        'Unauthorized! Access Token was expired!'
+      ) {
+        console.log('test');
+
+        customAxios.interceptors.response.eject(reqInterceptor);
+
+        return axios
+          .post('http://localhost:5000/auth/refresh', undefined, {
+            headers: {
+              'x-access-token': `${localStorage.getItem('refresh_token')}`,
+            },
+          })
+          .then((response) => {
+            console.log('changing token', response.data);
+            localStorage.setItem('access_token', response.data.data.token);
+            localStorage.setItem(
+              'refresh_token',
+              response.data.data.refreshToken
+            );
+            error.response.config.headers['x-access-token'] =
+              localStorage.getItem('access_token');
+            return axios(error.response.config);
+          })
+          .catch((error) => {
+            return Promise.reject(error);
+          })
+          .finally(createAxiosResponseInterceptor);
+      }
+
+      return Promise.reject(error);
+    }
+  );
+}
 
 export default customAxios;

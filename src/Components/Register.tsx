@@ -14,33 +14,32 @@ export default function Register() {
   const [userDetail, setUserDetail] = useState<userRegType>(initValue);
   let navigate = useNavigate();
 
-  const update = (prop:keyValue) => {
-    let {name, email, password, cPassword}  = userDetail;
-    if(prop.key === 'name') name = prop.value ;
-    else if(prop.key === 'email') email = prop.value ;
-    else if(prop.key === 'password') password = prop.value ;
-    else if(prop.key === 'cPassword') cPassword = prop.value ;
-    setUserDetail({name,email, password, cPassword});
+  const update = (prop: keyValue) => {
+    let { name, email, password, cPassword } = userDetail;
+    if (prop.key === 'name') name = prop.value;
+    else if (prop.key === 'email') email = prop.value;
+    else if (prop.key === 'password') password = prop.value;
+    else if (prop.key === 'cPassword') cPassword = prop.value;
+    setUserDetail({ name, email, password, cPassword });
   };
 
-  const regUser = (evt:React.FormEvent<HTMLFormElement>) => {
+  const regUser = (evt: React.FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
     let { name, email, password, cPassword } = userDetail;
     if (name && email && password && password === cPassword) {
       setUserDetail(initValue);
       console.log('reg user', userDetail);
       customAxios
-    .post('/auth/signup', { username: email, password })
-    .then((resp) => {
-      if(resp.status === 201) {
-        alert('User registered successfully!!');
-        navigate('/login');
-      }
-      else{
-        alert('Failed to register user')
-      }
-    })
-    .catch((err) => console.error(err.message));
+        .post('/auth/signup', { email, password })
+        .then((resp) => {
+          if (resp.status === 201) {
+            alert('User registered successfully!!');
+            navigate('/login');
+          } else {
+            alert('Failed to register user');
+          }
+        })
+        .catch((err) => console.error(err.message));
     }
   };
   return (
@@ -53,7 +52,9 @@ export default function Register() {
             type='text'
             id='name'
             value={userDetail.name}
-            onChange={(evt:React.ChangeEvent<HTMLInputElement>) => update({ key: 'name', value: evt.target.value })}
+            onChange={(evt: React.ChangeEvent<HTMLInputElement>) =>
+              update({ key: 'name', value: evt.target.value })
+            }
             autoFocus={true}
             autoComplete='off'
             required
@@ -65,7 +66,7 @@ export default function Register() {
             type='email'
             id='email'
             value={userDetail.email}
-            onChange={(evt:React.ChangeEvent<HTMLInputElement>) =>
+            onChange={(evt: React.ChangeEvent<HTMLInputElement>) =>
               update({ key: 'email', value: evt.target.value })
             }
             autoComplete='off'
@@ -78,7 +79,7 @@ export default function Register() {
             type='password'
             id='password'
             value={userDetail.password}
-            onChange={(evt:React.ChangeEvent<HTMLInputElement>) =>
+            onChange={(evt: React.ChangeEvent<HTMLInputElement>) =>
               update({ key: 'password', value: evt.target.value })
             }
             autoComplete='off'
@@ -91,7 +92,7 @@ export default function Register() {
             type='password'
             id='cpassword'
             value={userDetail.cPassword}
-            onChange={(evt:React.ChangeEvent<HTMLInputElement>) =>
+            onChange={(evt: React.ChangeEvent<HTMLInputElement>) =>
               update({ key: 'cPassword', value: evt.target.value })
             }
             autoComplete='off'
