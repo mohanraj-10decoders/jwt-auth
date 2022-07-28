@@ -1,0 +1,28 @@
+.register {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 80%;
+}
+
+.input {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    row-gap: 5px;
+    margin: 10px 0;
+}
+
+input {
+    width: 95%;
+}
+
+form {
+    background-color: white;
+    color: black;
+    padding: 20px;
+    border-radius: 5px;
+    width: 30%;
+    min-width: 300px;
+}
